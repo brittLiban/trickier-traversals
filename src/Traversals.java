@@ -1,5 +1,7 @@
 import java.util.*;
 
+import org.junit.platform.reporting.shadow.org.opentest4j.reporting.schema.QualifiedName;
+
 public class Traversals {
 
   /**
@@ -87,10 +89,24 @@ public class Traversals {
     return list;
    }
 
-   list.add(node.value);
-   collectLevelOrderValues(node.left);
-   collectLevelOrderValues(node.right);
+// do put it in order a queue is needed - duh 
+  Queue<TreeNode<T>> queue = new LinkedList<>();
+  queue.add(node);
 
+  while(!queue.isEmpty()){
+
+    TreeNode<T> current = queue.poll();
+    list.add(current.value);
+
+
+    if(current.left != null) {
+      queue.add(current.left);
+    }
+
+    if(current.right != null) {
+      queue.add(current.right);
+    }
+  }
     return list;
 
   }
@@ -103,7 +119,20 @@ public class Traversals {
    * @return the number of unique values in the tree, or 0 if the tree is null
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
-    return 0;
+
+    if(node == null){
+      return 0;
+    }
+    Set<Integer> uniqueNumber = new HashSet<>();
+
+    if(!uniqueNumber.contains(node.value)){
+      uniqueNumber.add(node.value);
+    }
+
+    countDistinctValues(node.left);
+    countDistinctValues(node.right);
+
+    return uniqueNumber.size();
   }
 
   /**
