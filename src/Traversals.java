@@ -124,13 +124,25 @@ public class Traversals {
       return 0;
     }
     Set<Integer> uniqueNumber = new HashSet<>();
+    Stack<TreeNode<Integer>> stack = new Stack<>();
+    stack.push(node); // need to initialize the stack first?!
 
-    if(!uniqueNumber.contains(node.value)){
-      uniqueNumber.add(node.value);
+    while(!stack.isEmpty()){
+      TreeNode<Integer> current = stack.pop();
+      uniqueNumber.add(current.value);
+      if(current.right != null){
+        stack.push(current.right);
+      }
+      if(current.left != null){
+        stack.push(current.left);
+      }
     }
+    // if(!uniqueNumber.contains(node.value)){
+    //   uniqueNumber.add(node.value);
+    // }
 
-    countDistinctValues(node.left);
-    countDistinctValues(node.right);
+    // countDistinctValues(node.left);
+    // countDistinctValues(node.right);
 
     return uniqueNumber.size();
   }
@@ -144,6 +156,37 @@ public class Traversals {
    * @return true if there exists a strictly increasing root-to-leaf path, false otherwise
    */
   public static boolean hasStrictlyIncreasingPath(TreeNode<Integer> node) {
+    if(node == null) {
+      return false;
+    }
+
+      Stack<TreeNode<Integer>> nodeStack = new Stack<>();
+      nodeStack.push(node);
+      Stack<Integer> valueStack = new Stack<>();
+      valueStack.push(node.value);
+
+      while (!nodeStack.isEmpty()) {
+        TreeNode<Integer> currentNode = nodeStack.pop();
+        int lastValue = valueStack.pop();  // The value to compare against.
+    
+        // If it's a leaf and we got here with a valid path, return true.
+        if (currentNode.left == null && currentNode.right == null) {
+            return true;
+        }
+    
+        // Push the right child if its value is greater.
+        if (currentNode.right != null && currentNode.right.value > lastValue) {
+            nodeStack.push(currentNode.right);
+            valueStack.push(currentNode.right.value);
+        }
+    
+        // Push the left child if its value is greater.
+        if (currentNode.left != null && currentNode.left.value > lastValue) {
+            nodeStack.push(currentNode.left);
+            valueStack.push(currentNode.left.value);
+        }
+    }
+
     return false;
   }
 
